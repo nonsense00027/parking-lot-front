@@ -230,6 +230,7 @@ function ParkingLot() {
         ))}
       </div>
 
+      {/* ADD PARKING SLOT MODAL */}
       <Modal
         title="Parking Slot Details"
         visible={addSlotModal}
@@ -281,6 +282,7 @@ function ParkingLot() {
         </div>
       </Modal>
 
+      {/* EDIT PARKING SLOT MODAL */}
       <Modal
         title="Parking Slot Details"
         visible={slotModal}
@@ -307,6 +309,7 @@ function ParkingLot() {
         </div>
       </Modal>
 
+      {/* UNPARK VEHICLE MODAL */}
       <Modal
         title="Vehicle Details"
         visible={unparkModal}
@@ -329,6 +332,7 @@ function ParkingLot() {
         </div>
       </Modal>
 
+      {/* PARK VEHICLE MODAL */}
       <Modal
         title="Vehicle Details"
         visible={modalShow}
@@ -336,6 +340,7 @@ function ParkingLot() {
         onCancel={() => setModalShow(false)}
       >
         <div>
+          <p>Plate number</p>
           <input
             type="text"
             className="border border-gray-200 w-full py-1 px-2 mb-2"
