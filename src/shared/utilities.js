@@ -5,7 +5,7 @@ export const getNearest = (slots, entry) => {
 };
 
 export const getAvailableSizes = (slots, size) => {
-  return slots.filter((slot) => slot.size >= size);
+  return slots.filter((slot) => slot.size >= size && slot.isOccupied === false);
 };
 
 export const getParkingFee = (size) => {

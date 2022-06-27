@@ -37,9 +37,12 @@ function ParkingLot() {
   const [unparkModal, setUnparkModal] = useState(false);
   const [slotModal, setSlotModal] = useState(false);
   const [addSlotModal, setAddSlotModal] = useState(false);
+
+  //   PARK VEHICLE
   const [entryPoint, setEntryPoint] = useState(null);
   const [size, setSize] = useState(null);
   const [plate, setPlate] = useState("");
+
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
@@ -65,7 +68,10 @@ function ParkingLot() {
 
   const updateSlots = (id) => {
     axios
-      .patch(`${process.env.REACT_APP_API}/slots/${id}`, { isOccupied: true })
+      .patch(`${process.env.REACT_APP_API}/slots/${id}`, {
+        isOccupied: true,
+        vehicle: plate,
+      })
       .then((res) => {
         window.location.reload();
       });
@@ -104,6 +110,10 @@ function ParkingLot() {
   };
 
   const handleSubmit = () => {
+    if (plate.length === 0 || size === null || entryPoint === null) {
+      alert("Incomplete Vehicle Details");
+      return;
+    }
     setModalShow(false);
     var slotId = "";
     var parkingFee = 0;
@@ -113,6 +123,11 @@ function ParkingLot() {
       parkingFee = getParkingFee(nearest.size);
     } else {
       const result = getAvailableSizes(slots, size);
+      console.log("result: ", result);
+      if (result.length < 1) {
+        alert("No parking slot available");
+        return;
+      }
       const nearest = getNearest(result, entryPoint);
       slotId = nearest.id;
       parkingFee = getParkingFee(nearest.size);
@@ -152,7 +167,7 @@ function ParkingLot() {
       onOk: async () => {
         await axios.patch(
           `${process.env.REACT_APP_API}/slots/${selectedVehicle.parkingSlot}`,
-          { isOccupied: false }
+          { isOccupied: false, vehicle: null }
         );
         await axios.patch(
           `${process.env.REACT_APP_API}/vehicles/${selectedVehicle.id}`,
@@ -189,7 +204,7 @@ function ParkingLot() {
 
   return (
     <div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-center">
         <button
           className="bg-blue-500 text-white px-10 py-2 rounded-sm"
           onClick={() => setModalShow(true)}
@@ -222,10 +237,15 @@ function ParkingLot() {
             key={slot.id}
             className={`${
               slot.isOccupied ? "bg-gray-400" : "bg-green-400"
-            } flex-1 h-12 grid place-items-center`}
+            } flex-1 px-4 py-4 flex justify-between rounded-sm shadow-sm cursor-pointer`}
             onClick={() => handleEditSlot(slot)}
           >
-            Parking {index}
+            <h1>Parking #{index + 1}</h1>
+            {slot.vehicle && (
+              <p>
+                <strong>Vehicle</strong>: {slot.vehicle}
+              </p>
+            )}
           </div>
         ))}
       </div>
@@ -359,30 +379,6 @@ function ParkingLot() {
               <p>{index + 1}</p>
             </div>
           ))}
-          {/* <div className="flex items-center gap-2">
-            <input
-              onClick={() => handleEntryChange(0)}
-              type="radio"
-              checked={entryPoint === 0}
-            />
-            <p>1</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              onClick={() => handleEntryChange(1)}
-              type="radio"
-              checked={entryPoint === 1}
-            />
-            <p>2</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              onClick={() => handleEntryChange(2)}
-              type="radio"
-              checked={entryPoint === 2}
-            />
-            <p>3</p>
-          </div> */}
         </div>
         <div>
           <h2>Size:</h2>
